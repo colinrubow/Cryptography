@@ -57,6 +57,35 @@ class CipherText:
         else:
             raise ValueError('message is already digitized')
 
+    def undigitize(self, state: str) -> None:
+        """
+        turns message from a list of ints into a string
+
+        Arguments
+        ---------
+        state: options are 'cipher' or 'plain', which makes the text upper or lower case respectively
+        """
+        if self.message is None:
+            raise ValueError('message is None')
+
+        if type(self.message) == list:
+            chars = []
+            if state == 'cipher':
+                base = ord('A') - 1
+            elif state == 'plain':
+                base = ord('a') - 1
+            else:
+                raise ValueError(f'state {state} is not \'cipher\' or \'plain\'')
+
+            for val in self.message:
+                if val == '0':
+                    chars.append(' ')
+                else:
+                    chars.append(chr(base + val))
+            self.message = "".join(chars)
+        else:
+            raise ValueError('message is already undigitized')
+
     def encrypt(self, method: Callable, **kwargs) -> None:
         """
         calls method with message and saves into message
@@ -84,6 +113,23 @@ class CipherText:
             raise ValueError('CipherText has not read a ciphertext file yet')
 
         self.dplaintext = method(self.message, kwargs)
+
+    def is_valid(self) -> bool:
+        """
+        checks if the message is valid by seeing if successive words are in a dictionary
+        """
+        if self.message is None:
+            raise ValueError('CipherText has not read a file yet')
+        if type(self.message) == list:
+            raise ValueError('message is not a string')
+
+        with open('./dictionary.txt', 'r') as f:
+            dictionary = f.read()
+        dictionary = dictionary.split('\n')
+        test = [1 if word in dictionary else 0 for word in self.message[:20]]
+        if sum(test) >= 15:
+            return True
+        return False
 
     def __str__(self) -> str:
         if self.message is not None:
