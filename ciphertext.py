@@ -1,5 +1,6 @@
 import re
 from typing import Callable
+import numpy as np
 
 
 class CipherText:
@@ -7,7 +8,7 @@ class CipherText:
     Will read txt files and then be able to convert them to and from letters and digits and do cyphers on it
     """
     def __init__(self) -> None:
-        self.message: None|str|list[int] = None
+        self.message: None|str|np.ndarray = None
         return
 
     def read(self, file: str, state: str) -> None:
@@ -53,7 +54,7 @@ class CipherText:
                     digital.append(0)
                 else:
                     digital.append(ord(ch) - base)
-            self.message = digital
+            self.message = np.array(digital)
         else:
             raise ValueError('message is already digitized')
 
@@ -68,7 +69,7 @@ class CipherText:
         if self.message is None:
             raise ValueError('message is None')
 
-        if type(self.message) == list:
+        if type(self.message) == np.ndarray:
             chars = []
             if state == 'cipher':
                 base = ord('A') - 1
@@ -106,13 +107,13 @@ class CipherText:
 
         Arguments
         ---------
-        method: the method used to decrypt such as exhaustive search for a shift cipher. First argument should be message
+        method: the method used to decrypt such as exhaustive search for a shift cipher. First argument should be message, the second is the validity test
         kwargs: arguments used for method
         """
         if self.message is None:
             raise ValueError('CipherText has not read a ciphertext file yet')
 
-        self.dplaintext = method(self.message, kwargs)
+        self.dplaintext = method(self.message, self.is_valid, kwargs)
 
     def is_valid(self) -> bool:
         """
