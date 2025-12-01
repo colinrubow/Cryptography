@@ -9,6 +9,19 @@ def permute_encrypt(plaintext: np.ndarray, key: list[int]) -> np.ndarray:
     ---------
     plaintext: the message to encrypt
     key: a list mapping each index to its new position
+
+    Returns
+    -------
+    the ciphertext
     """
     m = len(key)
-    plaintext + ['a']*(m - len(plaintext)%m)
+    # pad the edge
+    edge = len(plaintext)%m
+    if edge != 0:
+        ciphertext = np.hstack((plaintext, ['0']*(m - edge)))
+    else:
+        ciphertext = plaintext.copy()
+
+    for i in range(0, len(ciphertext), m):
+        ciphertext[i:i+m] = [ciphertext[i:i+m][k] for k in key]
+    return ciphertext
