@@ -4,7 +4,7 @@ from ciphertext import undigitize, is_valid, get_dictionary
 
 def shift_encrypt(plaintext: np.ndarray, key: int) -> np.ndarray:
     """
-    performs a shift cipher encryption by c = (p + key)%27
+    performs a shift cipher encryption by c = (p + key)%26
 
     Arguments
     ---------
@@ -16,6 +16,21 @@ def shift_encrypt(plaintext: np.ndarray, key: int) -> np.ndarray:
     the ciphertext
     """
     return (plaintext + key)%26
+
+def shift_decrypt(ciphertext: np.ndarray, key: int) -> np.ndarray:
+    """
+    performs a shift cipher decryption by c = (p - key)%26
+
+    Arguments
+    ---------
+    ciphertext: the iterable of integers
+    key: the de-shift amount
+
+    Returns
+    -------
+    the plaintext
+    """
+    return (ciphertext - key)%26
 
 def shift_decrypt_exhaustive(ciphertext: np.ndarray) -> tuple[np.ndarray, int]|None:
     """
