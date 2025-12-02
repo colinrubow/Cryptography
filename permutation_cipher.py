@@ -3,7 +3,7 @@ import numpy as np
 
 def permute_encrypt(plaintext: np.ndarray, key: list[int]) -> np.ndarray:
     """
-    encryptes the text by permuting every m=len(key) characters according to the key
+    encryptes the text by permuting every m=len(key) characters according to the key. The key indexes from 0.
 
     Arguments
     ---------
@@ -28,7 +28,7 @@ def permute_encrypt(plaintext: np.ndarray, key: list[int]) -> np.ndarray:
 
 def permute_decrypt(ciphertext: np.ndarray, key: list[int]) -> np.ndarray:
     """
-    decrypts the text by permuting every m=len(key) characters according to the inverse permuation of the key
+    decrypts the text by permuting every m=len(key) characters according to the inverse permuation of the key. The key indexes from 0.
 
     Arguments
     ---------

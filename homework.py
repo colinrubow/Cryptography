@@ -1,12 +1,10 @@
-from shift_cipher import shift_decrypt_exhaustive
+from permutation_cipher import permute_decrypt
 from ciphertext import *
 
-ciphertext = read('./exercises/Chapter_01/1_5.txt', 'cipher')
+ciphertext = read('./exercises/Chapter_01/1_16b.txt', 'cipher')
 dciphertext = digitize(ciphertext)
-result = shift_decrypt_exhaustive(dciphertext)
-if result is not None:
-    key = result[1]
-    plaintext = undigitize(result[0], 'plain')
-    print(key, plaintext)
-else:
-    print('no decryption found')
+key = [4, 1, 6, 2, 7, 3, 8, 5]
+key = [k - 1 for k in key]
+result = permute_decrypt(dciphertext, key)
+result = undigitize(result, 'cipher')
+print(result)
