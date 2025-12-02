@@ -30,7 +30,8 @@ def shift_decrypt(ciphertext: np.ndarray, key: int) -> np.ndarray:
     -------
     the plaintext
     """
-    return (ciphertext - key)%26
+    plaintext = shift_encrypt(ciphertext, -key)
+    return plaintext
 
 def shift_decrypt_exhaustive(ciphertext: np.ndarray) -> tuple[np.ndarray, int]|None:
     """
@@ -47,7 +48,7 @@ def shift_decrypt_exhaustive(ciphertext: np.ndarray) -> tuple[np.ndarray, int]|N
     """
     dictionary, max_word_len = get_dictionary('./dictionary.txt')
     for key in range(26):
-        message = (ciphertext - key)%26
+        message = shift_decrypt(ciphertext, key)
         alpha_text = undigitize(message, 'plain')
         if is_valid(alpha_text, dictionary, max_word_len):
             return message, key
