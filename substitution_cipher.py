@@ -1,6 +1,5 @@
-import numpy as np
-from ciphertext import digitize, undigitize, is_valid, get_dictionary
-import ciphertext
+from ciphertext import is_valid
+from utils import get_common_digrams, get_common_letters, get_common_trigrams, get_dictionary, get_digram_counts, get_letter_counts, get_trigram_counts
 import os
 
 
@@ -34,8 +33,7 @@ def sub_decrypt(ciphertext: str, key: dict) -> str:
     the plaintext
     """
     reverse_key = {v: k for k, v in key.items()}
-    plaintext = [reverse_key[c] for c in ciphertext]
-    return ''.join(plaintext)
+    return sub_encrypt(ciphertext, reverse_key)
 
 def sub_decrypt_frequency(ciphertext: str) -> tuple[str, dict]|None:
     """
@@ -64,22 +62,17 @@ def sub_decrypt_frequency(ciphertext: str) -> tuple[str, dict]|None:
     letter_freqs = [letter_freq_1, letter_freq_2, letter_freq_3, letter_freq_4, letter_freq_5]
 
     # get freq of letters in ciphertext
-    letters, counts = np.unique(list(ciphertext), return_counts=True)
+    letters, counts = get_letter_counts(ciphertext)
     freqs = [c/len(ciphertext) for c in counts]
-
-    # sort from most frequent to least
-    sorted_data = sorted(zip(letters, freqs), key=lambda x: x[1], reverse=True)
-    letters = [l for l, _ in sorted_data]
-    freqs = [f for _, f in sorted_data]
 
     key_start = {'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D', 'E': 'E', 'F': 'F', 'G': 'G', 'H': 'H', 'I': 'I', 'J': 'J', 'K': 'K', 'L': 'L', 'M': 'M', 'N': 'N', 'O': 'O', 'P': 'P', 'Q': 'Q', 'R': 'R', 'S': 'S', 'T': 'T', 'U': 'U', 'V': 'V', 'W': 'W', 'X': 'X', 'Y': 'Y', 'Z': 'Z'}
     key = key_start.copy()
 
-    cipher_freq_1 = [l for l, f in sorted_data if f > 0.1]
-    cipher_freq_2 = [l for l, f in sorted_data if 0.05 < f <= 0.1]
-    cipher_freq_3 = [l for l, f in sorted_data if 0.03 < f <= 0.05]
-    cipher_freq_4 = [l for l, f in sorted_data if 0.0125 < f <= 0.03]
-    cipher_freq_5 = [l for l, f in sorted_data if f <= 0.0125]
+    cipher_freq_1 = [l for l, f in zip(letters, freqs) if f > 0.1]
+    cipher_freq_2 = [l for l, f in zip(letters, freqs) if 0.05 < f <= 0.1]
+    cipher_freq_3 = [l for l, f in zip(letters, freqs) if 0.03 < f <= 0.05]
+    cipher_freq_4 = [l for l, f in zip(letters, freqs) if 0.0125 < f <= 0.03]
+    cipher_freq_5 = [l for l, f in zip(letters, freqs) if f <= 0.0125]
     cipher_freqs = [cipher_freq_1, cipher_freq_2, cipher_freq_3, cipher_freq_4, cipher_freq_5]
 
     # most likey guess to get started
@@ -98,18 +91,15 @@ def sub_decrypt_frequency(ciphertext: str) -> tuple[str, dict]|None:
         plaintext = ''.join(['-']*len(ciphertext))
 
     # start interacting
-    letter_freq = [l + f':{f:.3}' for l, f in sorted_data]
-    common_digrams = ['th', 'he', 'in', 'er', 'an', 're', 'ed', 'on', 'es', 'st', 'en', 'at', 'to', 'nt', 'ha', 'nd', 'ou', 'ea', 'ng', 'as', 'or', 'ti', 'is', 'et', 'it', 'ar', 'te', 'se', 'hi', 'of']
-    common_trigrams = ['the', 'ing', 'and', 'her', 'ere', 'ent', 'tha', 'nth', 'was', 'eth', 'for', 'dth']
-    common_letters = 'etaoinshrdlcumwfgypbvkjxqz'
-    digrams = [ciphertext[i:i+2] for i in range(len(ciphertext)-1)]
-    trigrams = [ciphertext[i:i+3] for i in range(len(ciphertext)-2)]
-    digram_freq, counts = np.unique(digrams, return_counts=True)
-    digram_freq = [f'{str(d)}:{int(c)}' for d, c in zip(digram_freq, counts) if c > 1]
-    digram_freq.sort(key=lambda x: int(x[3]), reverse=True)
-    trigram_freq, counts = np.unique(trigrams, return_counts=True)
-    trigram_freq = [f'{str(t)}:{int(c)}' for t, c in zip(trigram_freq, counts) if c > 1]
-    trigram_freq.sort(key=lambda x: int(x[4]), reverse=True)
+    letter_freq = [l + f':{f:.3}' for l, f in zip(letters, freqs)]
+    common_digrams = get_common_digrams()
+    common_trigrams = get_common_trigrams()
+    common_letters = get_common_letters()
+    digrams, digram_counts = get_digram_counts(ciphertext)
+    trigrams, trigram_counts = get_trigram_counts(ciphertext)
+
+    digram_freq = [f'{str(d)}:{int(c)}' for d, c in zip(digrams, digram_counts) if c > 1]
+    trigram_freq = [f'{str(t)}:{int(c)}' for t, c in zip(trigrams, trigram_counts) if c > 1]
     key = key_start.copy()
     while True:
         os.system('cls')

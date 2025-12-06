@@ -1,10 +1,11 @@
-from permutation_cipher import permute_decrypt
+from affine_cipher import affine_decrypt_frequency
 from ciphertext import *
 
-ciphertext = read('./exercises/Chapter_01/1_16b.txt', 'cipher')
+ciphertext = read('./exercises/Chapter_01/1_21c.txt', 'cipher')
 dciphertext = digitize(ciphertext)
-key = [4, 1, 6, 2, 7, 3, 8, 5]
-key = [k - 1 for k in key]
-result = permute_decrypt(dciphertext, key)
-result = undigitize(result, 'cipher')
-print(result)
+result = affine_decrypt_frequency(dciphertext)
+if result is None:
+    print('no solution')
+else:
+    plaintext = undigitize(result[0], 'plain')
+    print(plaintext, result[1])

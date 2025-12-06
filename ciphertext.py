@@ -72,26 +72,6 @@ def undigitize(message: np.ndarray, state: Literal['cipher', 'plain']) -> str:
         chars.append(chr(base + val))
     return "".join(chars)
 
-def get_dictionary(file: str) -> tuple[list[str], int]:
-    """
-    reads a dictionary and splits it into a list
-
-    Arguments
-    ---------
-    file: the directory of the dictionary
-
-    Returns
-    -------
-    the dictionary and the max word length
-    """
-    with open(file, 'r') as f:
-        dictionary = f.read()
-    dictionary = dictionary.split('\n')
-    for letter in ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']:
-        dictionary.remove(letter)
-    max_word_len = max((len(w) for w in dictionary))
-    return dictionary, max_word_len
-
 def is_valid(message: str, dictionary: list[str], max_word_len: int) -> bool:
     """
     checks if the message is valid by seeing if successive words are in a dictionary
