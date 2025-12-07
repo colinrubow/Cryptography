@@ -1,6 +1,5 @@
 import re
 from typing import Literal
-import numpy as np
 
 
 def read(file: str, state: str) -> str:
@@ -27,7 +26,7 @@ def read(file: str, state: str) -> str:
     text = re.sub(r'\s+', '', text).strip()
     return text
 
-def digitize(message: str) -> np.ndarray:
+def digitize(message: str) -> list[int]:
     """
     mapping 'a' -> 1, 'b' -> 2, ..., 'z' -> 26, and ' ' -> 0, digitized self.plaintext
 
@@ -47,9 +46,9 @@ def digitize(message: str) -> np.ndarray:
 
     for ch in message:
         digital.append(ord(ch) - base)
-    return np.array(digital)
+    return digital
 
-def undigitize(message: np.ndarray, state: Literal['cipher', 'plain']) -> str:
+def undigitize(message: list[int], state: Literal['cipher', 'plain']) -> str:
     """
     turns message from a list of ints into a string
 
@@ -72,7 +71,7 @@ def undigitize(message: np.ndarray, state: Literal['cipher', 'plain']) -> str:
         chars.append(chr(base + val))
     return "".join(chars)
 
-def is_valid(message: str, dictionary: list[str], max_word_len: int) -> bool:
+def is_valid(message: str, dictionary: list[str], max_word_len: int, min_req_score: int = 4) -> bool:
     """
     checks if the message is valid by seeing if successive words are in a dictionary
 
@@ -86,6 +85,7 @@ def is_valid(message: str, dictionary: list[str], max_word_len: int) -> bool:
     -------
     as expected
     """
+    # see if whole text is valid English
     n = len(message)
     max_word_len = min(max_word_len, n)
     dp = [False]*(n + 1)
@@ -101,7 +101,17 @@ def is_valid(message: str, dictionary: list[str], max_word_len: int) -> bool:
                     dp[i] = True
                     prev[i] = j
                     break
+    if dp[n]:
+        return True
 
-    if not dp[n]:
-        return False
-    return True
+    # if can beat min_req_score
+    score = 0
+    for len_word in range(10, 3, -1):
+        for j in range(0, len(message), len_word):
+            if message[j:j+len_word]:
+                score += len_word - 3
+                message = message[:j] + message[j+len_word+1:]
+        if score >= min_req_score:
+            return True
+
+    return False

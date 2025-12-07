@@ -1,9 +1,8 @@
-import numpy as np
 from ciphertext import undigitize, is_valid
 from utils import get_dictionary
 
 
-def shift_encrypt(plaintext: np.ndarray, key: int) -> np.ndarray:
+def shift_encrypt(plaintext: list[int], key: int) -> list[int]:
     """
     performs a shift cipher encryption by c = (p + key)%26
 
@@ -16,9 +15,9 @@ def shift_encrypt(plaintext: np.ndarray, key: int) -> np.ndarray:
     -------
     the ciphertext
     """
-    return (plaintext + key)%26
+    return [(p + key)%26 for p in plaintext]
 
-def shift_decrypt(ciphertext: np.ndarray, key: int) -> np.ndarray:
+def shift_decrypt(ciphertext: list[int], key: int) -> list[int]:
     """
     performs a shift cipher decryption by p = (c - key)%26
 
@@ -34,7 +33,7 @@ def shift_decrypt(ciphertext: np.ndarray, key: int) -> np.ndarray:
     plaintext = shift_encrypt(ciphertext, -key)
     return plaintext
 
-def shift_decrypt_exhaustive(ciphertext: np.ndarray) -> tuple[np.ndarray, int]|None:
+def shift_decrypt_exhaustive(ciphertext: list[int]) -> tuple[list[int], int]|None:
     """
     decrypts the shift cipher by exhaustive search from key = 0 to 26
 

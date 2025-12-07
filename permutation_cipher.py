@@ -1,7 +1,4 @@
-import numpy as np
-
-
-def permute_encrypt(plaintext: np.ndarray, key: list[int]) -> np.ndarray:
+def permute_encrypt(plaintext: list[str], key: list[int]) -> list[str]:
     """
     encryptes the text by permuting every m=len(key) characters according to the key. The key indexes from 0.
 
@@ -18,7 +15,7 @@ def permute_encrypt(plaintext: np.ndarray, key: list[int]) -> np.ndarray:
     # pad the edge
     edge = len(plaintext)%m
     if edge != 0:
-        ciphertext = np.hstack((plaintext, ['0']*(m - edge)))
+        ciphertext = plaintext + ['a']*(m - edge)
     else:
         ciphertext = plaintext.copy()
 
@@ -26,7 +23,7 @@ def permute_encrypt(plaintext: np.ndarray, key: list[int]) -> np.ndarray:
         ciphertext[i:i+m] = [ciphertext[i:i+m][k] for k in key]
     return ciphertext
 
-def permute_decrypt(ciphertext: np.ndarray, key: list[int]) -> np.ndarray:
+def permute_decrypt(ciphertext: list[str], key: list[int]) -> list[str]:
     """
     decrypts the text by permuting every m=len(key) characters according to the inverse permuation of the key. The key indexes from 0.
 
