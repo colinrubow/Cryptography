@@ -50,7 +50,6 @@ def affine_decrypt_frequency(ciphertext: np.ndarray) -> tuple[np.ndarray, tuple[
     -------
     the decrypted message along with the key or None if no solution is found
     """
-    # FIXME: doesn't workuuuuh
     dictionary, max_word_len = get_dictionary('./dictionary.txt')
 
     tciphertext = undigitize(ciphertext, 'cipher')
@@ -59,9 +58,11 @@ def affine_decrypt_frequency(ciphertext: np.ndarray) -> tuple[np.ndarray, tuple[
     for i, letter_1 in enumerate(letters):
         cipher_1 = int(digitize(letter_1)[0])
         plain_1 = int(digitize(common_letters[i])[0])
-        for j, letter_2 in enumerate(letters[i+1:]):
+        letters_new = letters[:i] + letters[i+1:]
+        common_letters_new = common_letters[:i] + common_letters[i+1:]
+        for j, letter_2 in enumerate(letters_new):
             cipher_2 = int(digitize(letter_2)[0])
-            plain_2 = int(digitize(common_letters[i+j+1])[0])
+            plain_2 = int(digitize(common_letters_new[j])[0])
 
             delta_p = (plain_1 - plain_2) % 26
             if np.gcd(delta_p, 26) == 1:
@@ -70,6 +71,5 @@ def affine_decrypt_frequency(ciphertext: np.ndarray) -> tuple[np.ndarray, tuple[
                 if np.gcd(a, 26) == 1:
                     plaintext = affine_decrypt(ciphertext, (a, b))
                     tplaintext = undigitize(plaintext, 'plain')
-                    print(tplaintext)
                     if is_valid(tplaintext, dictionary, max_word_len):
                         return plaintext, (a, b)

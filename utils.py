@@ -1,7 +1,5 @@
 import numpy as np
 
-import ciphertext
-
 def get_dictionary(file: str) -> tuple[list[str], int]:
     """
     reads a dictionary and splits it into a list
@@ -15,11 +13,12 @@ def get_dictionary(file: str) -> tuple[list[str], int]:
     the dictionary and the max word length
     """
     with open(file, 'r') as f:
-        dictionary = f.read()
-    dictionary = dictionary.split('\n')
-    for letter in ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']:
-        dictionary.remove(letter)
-    max_word_len = max((len(w) for w in dictionary))
+        dictionary = f.read().splitlines()
+    # normalize to lowercase and strip empty lines
+    dictionary = [w.strip().lower() for w in dictionary if w.strip()]
+    # remove single-letter words except 'a' and 'i'
+    dictionary = [w for w in dictionary if not (len(w) == 1 and w not in ('a', 'i'))]
+    max_word_len = max((len(w) for w in dictionary)) if dictionary else 0
     return dictionary, max_word_len
 
 def get_common_letters() -> str:
