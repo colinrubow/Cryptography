@@ -1,3 +1,6 @@
+from math import gcd
+
+
 def vigenere_encrypt(plaintext: list[int], key: list[int]) -> list[int]:
     """
     performs a vigenere encryption by c = p + key
@@ -38,14 +41,26 @@ def vigenere_decrypt(ciphertext: list[int], key: list[int]) -> list[int]:
 
     return plaintext
 
+def kasiski_test(ciphertext: list[int], length: int = 3) -> int:
+    """
+    attempts to determine the length of the keyword using the kasiski test: a vigenere cipher will encode the same plaintext the same way at equal increments
 
-if __name__ == '__main__':
-    from ciphertext import digitize, undigitize
-    plaintext = 'thiscryptosystemisnotsecure'
-    key = 'cipher'
-    plaintext = digitize(plaintext)
-    key = digitize(key)
-    ciphertext = vigenere_encrypt(plaintext, key)
-    plaintext = vigenere_decrypt(ciphertext, key)
-    plaintext = undigitize(plaintext, 'plain')
-    print(plaintext)
+    Arguments
+    ---------
+    ciphertext: the text
+    length: the length of the string to check for repeated values
+    """
+    # get all substrings of length length
+    substrings = [ciphertext[i:i+length] for i in range(len(ciphertext) - length + 1)]
+
+    # get most frequent substring
+    substring_most = max(substrings, key = substrings.count)
+
+    # get the indices of the substrings
+    indices = [i for i in range(len(substrings)) if substrings[i] == substring_most]
+
+    # get the diffs
+    diffs = [i - indices[0] for i in indices]
+
+    # get the gcd
+    return gcd(*diffs[1:])
