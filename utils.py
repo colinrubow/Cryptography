@@ -1,4 +1,6 @@
-import numpy as np
+from numpy import unique
+from math import comb
+
 
 def get_dictionary(file: str) -> tuple[list[str], int]:
     """
@@ -51,7 +53,7 @@ def get_letter_counts(text: str) -> tuple[list[str], list[int]]:
     -------
     the first item is a list of the letters from most frequent to least. The second is the counts.
     """
-    letters, counts = np.unique(list(text), return_counts=True)
+    letters, counts = unique(list(text), return_counts=True)
     sorted_data = sorted(zip(letters, counts), key=lambda x: x[1], reverse=True)
     letters = [str(l) for l, _ in sorted_data]
     counts = [int(c) for _, c in sorted_data]
@@ -70,7 +72,7 @@ def get_digram_counts(text: str) -> tuple[list[str], list[int]]:
     the first item is a list of the digrams from most frequent to least. The second is the counts.
     """
     digrams = [text[i:i+2] for i in range(len(text) - 1)]
-    digrams, counts = np.unique(digrams, return_counts=True)
+    digrams, counts = unique(digrams, return_counts=True)
     sorted_data = sorted(zip(digrams, counts), key=lambda x: x[1], reverse=True)
     digrams = [str(l) for l, _ in sorted_data]
     counts = [int(c) for _, c in sorted_data]
@@ -89,8 +91,27 @@ def get_trigram_counts(text: str) -> tuple[list[str], list[int]]:
     the first item is a list of the trigrams from the most frequent to least. The second is the counts.
     """
     trigrams = [text[i:i+3] for i in range(len(text) - 2)]
-    trigrams, counts = np.unique(trigrams, return_counts=True)
+    trigrams, counts = unique(trigrams, return_counts=True)
     sorted_data = sorted(zip(trigrams, counts), key=lambda x: x[1], reverse=True)
     trigrams = [str(l) for l, _ in sorted_data]
     counts = [int(c) for _, c in sorted_data]
     return trigrams, counts
+
+def index_of_coincidence(string: list[int]) -> float:
+    """
+    calculates the index of coincidence of the given string. A normal text should return about 0.065. A random string should return about 0.038
+
+    Arguments
+    ---------
+    string: the message
+
+    Returns
+    -------
+    the index of coincidence
+    """
+    n = len(string)
+    freqs = [0]*27
+    for character in string:
+        freqs[character] += 1
+    ic = sum(comb(f, 2) for f in freqs[1:])/comb(n, 2)
+    return ic
