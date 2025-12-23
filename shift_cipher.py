@@ -50,5 +50,5 @@ def shift_decrypt_exhaustive(ciphertext: list[int]) -> tuple[list[int], int]|Non
     for key in range(26):
         message = shift_decrypt(ciphertext, key)
         alpha_text = undigitize(message, 'plain')
-        if is_valid(alpha_text, dictionary, max_word_len):
+        if is_valid(alpha_text, dictionary, max_word_len, min_req_score=10):
             return message, key

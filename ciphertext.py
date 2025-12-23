@@ -108,7 +108,7 @@ def is_valid(message: str, dictionary: list[str], max_word_len: int, min_req_sco
     score = 0
     for len_word in range(10, 3, -1):
         for j in range(0, len(message), len_word):
-            if message[j:j+len_word]:
+            if message[j:j+len_word] in dictionary:
                 score += len_word - 3
                 message = message[:j] + message[j+len_word+1:]
         if score >= min_req_score:

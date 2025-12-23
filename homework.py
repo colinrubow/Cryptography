@@ -1,6 +1,9 @@
-from permutation_cipher import permute_encrypt
+from vigenere_cipher import vigenere_decrypt_kasiski_index
 from ciphertext import *
 
-plaintext = 'iknowyourdreamsyoufoolishgirl'
-ciphertext = permute_encrypt(list(plaintext), [2,0,1])
-print(ciphertext)
+ciphertext = read('./exercises/Chapter_01/1_21d.txt', 'cipher')
+dciphertext = digitize(ciphertext)
+dplaintext, key = vigenere_decrypt_kasiski_index(dciphertext, 'index')
+
+print(undigitize(key, 'cipher'))
+print(undigitize(dplaintext, 'plain'))
