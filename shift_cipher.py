@@ -1,5 +1,5 @@
 from ciphertext import undigitize, is_valid
-from utils import get_dictionary
+from utils import get_dictionary, index_of_coincidence
 
 
 def shift_encrypt(plaintext: list[int], key: int) -> list[int]:

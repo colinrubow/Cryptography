@@ -115,3 +115,30 @@ def index_of_coincidence(string: list[int]) -> float:
         freqs[character] += 1
     ic = sum(comb(f, 2) for f in freqs[1:])/comb(n, 2)
     return ic
+
+def get_normal_letter_probabilities() -> list[float]:
+    """
+    returns a list of probabilities, A - 0 -> 0.082
+
+    Returns
+    -------
+    the mapping from letter integers to their probabilities
+    """
+    return [0.082, 0.015, 0.028, 0.043, 0.127, 0.022, 0.02, 0.061, 0.07, 0.0015, 0.008, 0.04, 0.024, 0.067, 0.075, 0.019, 0.001, 0.06, 0.063, 0.091, 0.028, 0.01, 0.023, 0.001, 0.02, 0.001]
+
+def get_letter_freqs(text: list[int]) -> list[int]:
+    """
+    returns the counts for each letter in order of A to Z
+
+    Arguments
+    ---------
+    text: the text in digital form
+
+    Returns
+    -------
+    the counts for A, the counts for B, etc
+    """
+    freqs = [0]*26
+    for character in text:
+        freqs[character] += 1
+    return freqs

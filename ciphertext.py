@@ -28,7 +28,7 @@ def read(file: str, state: str) -> str:
 
 def digitize(message: str) -> list[int]:
     """
-    mapping 'a' -> 1, 'b' -> 2, ..., 'z' -> 26, and ' ' -> 0, digitized self.plaintext
+    mapping 'a' -> 0, 'b' -> 1, ..., 'z' -> 25
 
     Arguments
     ---------
