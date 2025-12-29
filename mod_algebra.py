@@ -114,5 +114,48 @@ def mult(m_1: list[list[int]], m_2: list[list[int]]) -> list[list[int]]:
 
     return result
 
-if __name__ == '__main__':
-    print(inv([[1, 17, 4], [0, 19, 7], [19, 0, 10]]))
+def sub(m_1: list[list[int]], m_2: list[list[int]]) -> list[list[int]]:
+    """
+    performs m_1 - m_2
+
+    Arguments
+    ---------
+    m_1: the left matrix
+    m_2: the right matrix
+
+    Return
+    ------
+    m_1 - m_2
+    """
+    rows = len(m_1)
+    cols = len(m_1[0])
+
+    if rows != len(m_2) or cols != len(m_2[0]):
+        raise ValueError("subtraction failed, matrices are different sizes")
+
+    result = [[(m_1[i][j] - m_2[i][j])%26 for j in range(cols)] for i in range(rows)]
+
+    return result
+
+def add(m_1: list[list[int]], m_2: list[list[int]]) -> list[list[int]]:
+    """
+    performs m_1 + m_2
+
+    Arguments
+    ---------
+    m_1: the left matrix
+    m_2: the right matrix
+
+    Return
+    ------
+    m_1 + m_2
+    """
+    rows = len(m_1)
+    cols = len(m_1[0])
+
+    if rows != len(m_2) or cols != len(m_2[0]):
+        raise ValueError("subtraction failed, matrices are different sizes")
+
+    result = [[(m_1[i][j] + m_2[i][j])%26 for j in range(cols)] for i in range(rows)]
+
+    return result

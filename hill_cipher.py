@@ -42,7 +42,6 @@ def hill_decrypt(ciphertext: list[int], key: list[list[int]]) -> list[int]:
     the plaintext
     """
     m = len(key)
-    # test if key is valid (will raise exception if not)
     k_inv = inv(key)
     plaintext = []
     for i in range(0, len(ciphertext), m):
