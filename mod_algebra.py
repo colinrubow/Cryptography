@@ -159,3 +159,21 @@ def add(m_1: list[list[int]], m_2: list[list[int]]) -> list[list[int]]:
     result = [[(m_1[i][j] + m_2[i][j])%26 for j in range(cols)] for i in range(rows)]
 
     return result
+
+if __name__ == '__main__':
+    k = [[10, 5, 12], [3, 14, 21], [8, 9, 11]]
+
+    assert det(k) == 7
+
+    assert adjoint(k) == [[17, 1, 15], [5, 14, 8], [19, 2, 21]]
+
+    assert inv(k) == [[21, 15, 17], [23, 2, 16], [25, 4, 3]]
+
+    m_1 = [[11, 8], [3, 7]]
+    m_2 = [[7, 18], [23, 11]]
+
+    assert mult(m_1, m_2) == [[1, 0], [0, 1]]
+
+    assert sub(m_1, m_2) == [[4, 16], [6, 22]]
+
+    assert add(m_1, m_2) == [[18, 0], [0, 18]]
