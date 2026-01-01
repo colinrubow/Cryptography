@@ -1,3 +1,7 @@
+from utils import get_dictionary
+from ciphertext import is_valid
+
+
 def permute_encrypt(plaintext: list[str], key: list[int]) -> list[str]:
     """
     encryptes the text by permuting every m=len(key) characters according to the key. The key indexes from 0.
@@ -47,3 +51,60 @@ def permute_decrypt(ciphertext: list[str], key: list[int]) -> list[str]:
 
     plaintext = permute_encrypt(ciphertext, new_key)
     return plaintext
+
+def permute_mod_class_encrypt(plaintext: list[str], key: int) -> list[str]:
+    """
+    encrypts a permutation by sorting the letters into classes mod key
+
+    Arguments
+    ---------
+    plaintext: the message
+    key: the number of classes
+
+    Returns
+    -------
+    the ciphertext
+    """
+    block = [[plaintext[i] for i in range(len(plaintext)) if i%key == n] for n in range(key)]
+    ciphertext = []
+    for text in block:
+        ciphertext.extend(text)
+    return ciphertext
+
+def permute_mod_class_decrypt(ciphertext: list[str], key: int) -> list[str]:
+    """
+    decrypts a permutation by unsorting the letteres from their classes mod key
+
+    Arguments
+    ---------
+    ciphertext: the message
+    key: the number of classes
+
+    Returns
+    -------
+    the plaintext
+    """
+    key = len(ciphertext)//key
+    return permute_mod_class_encrypt(ciphertext, key)
+
+def permute_mod_class_decrypt_exhaustive(ciphertext: list[str]) -> tuple[list[str], int]:
+    """
+    decrypts a mod class permutation encryption by checking each mod class
+
+    Arguments
+    ---------
+    ciphertext: the message
+
+    Returns
+    -------
+    the plaintext and the key
+    """
+    dictionary, max_word_len = get_dictionary('./dictionary.txt')
+
+    for key in range(2, len(ciphertext)):
+        plaintext = permute_mod_class_decrypt(ciphertext, key)
+        # combine all chars in plaintext into a single str
+        plaintext = "".join(plaintext)
+        if is_valid(plaintext, dictionary, max_word_len, 20):
+            return list(plaintext), key
+    return [""], 0
