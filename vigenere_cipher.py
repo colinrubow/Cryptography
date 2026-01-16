@@ -194,3 +194,83 @@ def vigenere_decrypt_kasiski_index(ciphertext: list[int], method: str) -> tuple[
         key.append(key_best)
     plaintext = vigenere_decrypt(ciphertext, key)
     return plaintext, key
+
+def vigenere_shift_encrypt(plaintext: list[int], key: list[int]) -> list[int]:
+    """
+    performs a vigenere encryption but the key shifts up by one each iteration
+
+    Arguments
+    ---------
+    plaintext: the message
+    key: the key word
+
+    Returns
+    -------
+    the ciphertext
+    """
+    ciphertext = plaintext.copy()
+    m = len(key)
+
+    for i in range(len(ciphertext)):
+        ciphertext[i] = (ciphertext[i] + key[i%m] + i//m)%26
+
+    return ciphertext
+
+def vigenere_shift_decrypt(ciphertext: list[int], key: list[int]) -> list[int]:
+    """
+    performs a vigenere decryption but the key shifts up by one each iteration
+
+    Arguments
+    ---------
+    ciphertext: the message
+    key: the key word
+
+    Returns
+    -------
+    the plaintext
+    """
+    plaintext = ciphertext.copy()
+    m = len(key)
+
+    for i in range(len(plaintext)):
+        plaintext[i] = (plaintext[i] - key[i%m] - i//m)%26
+
+    return plaintext
+
+def vigenere_shift_decrypt_index(ciphertext: list[int]) -> tuple[list[int], list[int]]:
+    """
+    attempts to decrypt the message using index of coincidence.
+
+    Arguments
+    ---------
+    ciphertext: the message
+
+    Returns
+    -------
+    the plaintext
+    """
+    best_index = 0
+    best_m = 0
+    for m in range(2, 11):
+        ciphertext_unshifted = vigenere_shift_decrypt(ciphertext, [0]*m)
+        index = index_of_coincidence(ciphertext_unshifted)
+        if index > best_index:
+            best_index = index
+            best_m = m
+    ciphertext_unshifted = vigenere_shift_decrypt(ciphertext, [0]*best_m)
+
+    key = []
+    p = get_normal_letter_probabilities()
+    substrings = divide_string_by_index(ciphertext_unshifted, best_m)
+    for i in range(best_m):
+        key_best = 0
+        mg_best = 0
+        freqs = get_letter_freqs(substrings[i])
+        for j in range(1, 27):
+            mg = sum([p[k]*freqs[(k+j)%26] for k in range(26)])/len(substrings[i])
+            if mg > mg_best:
+                mg_best = mg
+                key_best = j
+        key.append(key_best)
+    plaintext = vigenere_decrypt(ciphertext_unshifted, key)
+    return plaintext, key
